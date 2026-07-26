@@ -1,0 +1,13 @@
+{
+    "hostname": "sw1",
+    "vlans": {
+        "1": "default",
+        "10": "SALES",
+        "20": "hr",
+        "2": "cam",
+        "50": "jan"
+    },
+    "interfaces": {},
+    "mac_table": [],
+    "routes": []
+}
