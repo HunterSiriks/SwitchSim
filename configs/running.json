@@ -1,5 +1,5 @@
 {
-    "hostname": "sw1",
+    "hostname": "switch",
     "vlans": {
         "1": "default",
         "10": "SALES",

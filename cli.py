@@ -1,6 +1,6 @@
 from commands import Commands
 from config import Config
-
+from engines.interface import InterfaceEngine
 
 class CLI:
 
@@ -13,6 +13,10 @@ class CLI:
         self.mode = "user"
 
         self.current_vlan = None
+
+        self.iface = InterfaceEngine()
+
+        self.current_interface = None
 
     def prompt(self):
 
@@ -27,6 +31,9 @@ class CLI:
 
         elif self.mode == "config-vlan":
             return f"{self.hostname}(config-vlan)# "
+
+        elif self.mode == "config-if":
+            return f"{self.hostname}(config-if)# "
 
     def run(self):
 
@@ -86,7 +93,12 @@ class CLI:
                 elif cmd == "show ip interface brief":
 
                     Commands.show_ip_interface_brief()
+                   
+                elif cmd == "show interfaces status":
 
+                    Commands.show_interfaces_status(
+                       self.iface
+                    )
                 elif cmd == "exit":
 
                     print("Bye!")
@@ -136,6 +148,25 @@ class CLI:
 
                             self.mode = "config-vlan"
 
+                    elif parts[0] == "interface":
+
+                       if len(parts) > 1:
+
+                         iface = parts[1]
+
+                         iface = iface.replace("fa", "Fa")
+                         iface = iface.replace("gi", "Gi")
+
+                         if self.iface.exists(iface):
+
+                            self.current_interface = iface
+
+                            self.mode = "config-if"
+
+                         else:
+
+                            print("% Interface does not exist")
+
                     else:
 
                         Commands.invalid()
@@ -163,3 +194,42 @@ class CLI:
                 else:
 
                     Commands.invalid()
+            
+            elif self.mode == "config-if":
+
+                if cmd == "exit":
+                  self.mode = "config"
+
+                elif cmd == "end":
+                  self.mode = "privileged"
+
+                elif cmd.startswith("description "):
+
+                  self.iface.set_description(
+                  self.current_interface,
+                  cmd[12:]
+                  )
+
+                elif cmd == "shutdown":
+
+                  self.iface.shutdown(
+                  self.current_interface
+                  )
+
+                elif cmd == "no shutdown":
+
+                  self.iface.no_shutdown(
+                  self.current_interface
+                  )
+
+                elif cmd.startswith("switchport access vlan "):
+
+                  vlan = int(cmd.split()[-1])
+
+                  self.iface.set_access_vlan(
+                  self.current_interface,
+                  vlan
+                  )
+
+                else:
+                  print("% Invalid command")
