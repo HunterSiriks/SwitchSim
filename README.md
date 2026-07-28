@@ -37,12 +37,20 @@ git clone https://github.com/USERNAME/switchsim.git
 cd switchsim
 python main.py
 
-# Example Commands
+## Example Commands
 
+Create a VLAN, configure an interface, and view the running configuration:
+
+```text
 Switch> enable
-Switch# show running-config
 Switch# configure terminal
 Switch(config)# vlan 10
 Switch(config-vlan)# name SALES
+Switch(config-vlan)# exit
 Switch(config)# interface Fa0/1
+Switch(config-if)# description PC1
 Switch(config-if)# switchport access vlan 10
+Switch(config-if)# no shutdown
+Switch(config-if)# exit
+Switch(config)# exit
+Switch# show running-config
