@@ -1,3 +1,4 @@
+import time
 from config import Config
 
 cfg = Config()
@@ -95,3 +96,159 @@ Fa0/2                  unassigned      up
             )
 
         print()
+
+    @staticmethod
+    def show_running_config(config, iface_engine):
+
+        config_text = ""
+
+        config_text += (
+            f"hostname {config.hostname()}\n\n"
+        )
+
+        for vlan, name in config.vlans().items():
+
+            config_text += (
+                f"vlan {vlan}\n"
+            )
+
+            config_text += (
+                f" name {name}\n\n"
+            )
+
+        for iface, data in iface_engine.all().items():
+
+            if (
+                data["description"] or
+                data["access_vlan"] != 1 or
+                data["admin_up"]
+            ):
+
+                config_text += (
+                    f"interface {iface}\n"
+                )
+
+                if data["description"]:
+
+                    config_text += (
+                        f" description "
+                        f"{data['description']}\n"
+                    )
+
+                config_text += (
+                    f" switchport access vlan "
+                    f"{data['access_vlan']}\n"
+                )
+
+                if data["admin_up"]:
+
+                    config_text += (
+                        " no shutdown\n"
+                    )
+
+                else:
+
+                    config_text += (
+                        " shutdown\n"
+                    )
+
+                config_text += "\n"
+
+        size = len(
+            config_text.encode("utf-8")
+        )
+
+        print()
+
+        print(
+            "Building configuration..."
+        )
+
+        time.sleep(2)
+
+        print()
+
+        print(
+            f"Current configuration : "
+            f"{size} bytes"
+        )
+
+        print()
+
+        print(config_text)
+
+        print("end")
+
+    @staticmethod
+    def show_startup_config(config):
+
+        startup = config.load_startup()
+
+        if startup is None:
+
+            print(
+                "% Startup configuration not found"
+            )
+
+            return
+
+        print()
+
+        print(
+            "Using startup configuration"
+        )
+
+        print()
+
+        print(
+            f"hostname "
+            f"{startup['hostname']}"
+        )
+
+        print()
+
+        for vlan, name in startup[
+            "vlans"
+        ].items():
+
+            print(f"vlan {vlan}")
+
+            print(f" name {name}")
+
+            print()
+
+        for iface, data in startup[
+            "interfaces"
+        ].items():
+
+            print(
+                f"interface {iface}"
+            )
+
+            if data["description"]:
+
+                print(
+                    f" description "
+                    f"{data['description']}"
+                )
+
+            print(
+                f" switchport access vlan "
+                f"{data['access_vlan']}"
+            )
+
+            if data["admin_up"]:
+
+                print(
+                    " no shutdown"
+                )
+
+            else:
+
+                print(
+                    " shutdown"
+                )
+
+            print()
+
+        print("end")

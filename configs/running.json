@@ -1,11 +1,7 @@
 {
     "hostname": "switch",
     "vlans": {
-        "1": "default",
-        "10": "SALES",
-        "20": "hr",
-        "2": "cam",
-        "50": "jan"
+        "1": "default"
     },
     "interfaces": {},
     "mac_table": [],

@@ -1,6 +1,18 @@
 from commands import Commands
+
 from config import Config
+
 from engines.interface import InterfaceEngine
+
+from save import copy_running_to_startup
+
+from save import reload_config
+
+from save import erase_startup_config
+
+from save import erase_running_config
+
+from help import Help
 
 class CLI:
 
@@ -15,6 +27,10 @@ class CLI:
         self.current_vlan = None
 
         self.iface = InterfaceEngine()
+        
+        self.iface.import_data(
+            self.config.load_interfaces()
+        )
 
         self.current_interface = None
 
@@ -53,6 +69,14 @@ class CLI:
                 if cmd == "enable":
 
                     self.mode = "privileged"
+                
+                elif cmd == "help":
+
+                    Help.show()
+
+                elif cmd == "?":
+
+                    Help.show()
 
                 elif cmd == "exit":
 
@@ -82,6 +106,15 @@ class CLI:
 
                     Commands.show_version()
 
+
+                elif cmd == "help":
+
+                    Help.show()
+
+                elif cmd == "?":
+
+                    Help.show()
+
                 elif cmd == "show vlan brief":
 
                     Commands.show_vlan()
@@ -99,6 +132,92 @@ class CLI:
                     Commands.show_interfaces_status(
                        self.iface
                     )
+                
+                elif cmd == "show running-config":
+                
+                    Commands.show_running_config(
+                       self.config,
+                       self.iface
+                    )
+                
+                elif cmd == "copy running-config startup-config":
+
+                    copy_running_to_startup()
+                
+                elif cmd == "write memory":
+                
+                    copy_running_to_startup()
+
+                elif cmd == "wr":
+
+                    copy_running_to_startup()
+
+                elif cmd == "show startup-config":
+
+                    Commands.show_startup_config(
+                        self.config
+                    )
+
+                elif cmd == "erase startup-config":
+
+                    erase_startup_config()
+                
+                elif cmd == "erase running-config":
+
+                    erase_running_config()
+
+                    self.config.load()
+
+                    self.hostname = (
+                        self.config.hostname()
+                    )
+
+                    self.iface.import_data(
+                        self.config.load_interfaces()
+                    )
+
+                elif cmd == "write erase":
+
+                    erase_running_config()
+
+                    self.config.load()
+
+                    self.hostname = (
+                        self.config.hostname()
+                    )
+
+                    self.iface.import_data(
+                        self.config.load_interfaces()
+                    )
+
+                elif cmd == "we":
+
+                    erase_running_config()
+
+                    self.config.load()
+
+                    self.hostname = (
+                        self.config.hostname()
+                    )
+
+                    self.iface.import_data(
+                        self.config.load_interfaces()
+                    )
+
+                elif cmd == "reload":
+
+                    if reload_config():
+
+                        self.config.load()
+
+                        self.hostname = (
+                            self.config.hostname()
+                        )
+
+                        self.iface.import_data(
+                            self.config.load_interfaces()
+                        )
+
                 elif cmd == "exit":
 
                     print("Bye!")
@@ -198,38 +317,58 @@ class CLI:
             elif self.mode == "config-if":
 
                 if cmd == "exit":
-                  self.mode = "config"
+                    self.mode = "config"
 
                 elif cmd == "end":
-                  self.mode = "privileged"
+                    self.mode = "privileged"
 
                 elif cmd.startswith("description "):
 
-                  self.iface.set_description(
-                  self.current_interface,
-                  cmd[12:]
-                  )
+                    self.iface.set_description(
+                        self.current_interface,
+                        cmd[12:]
+                    )
+
+                    self.config.save_interface(
+                        self.current_interface,
+                        self.iface.get(self.current_interface)
+                    )
 
                 elif cmd == "shutdown":
 
-                  self.iface.shutdown(
-                  self.current_interface
-                  )
+                    self.iface.shutdown(
+                        self.current_interface
+                    )
+
+                    self.config.save_interface(
+                        self.current_interface,
+                        self.iface.get(self.current_interface)
+                    )
 
                 elif cmd == "no shutdown":
 
-                  self.iface.no_shutdown(
-                  self.current_interface
-                  )
+                    self.iface.no_shutdown(
+                        self.current_interface
+                    )
+
+                    self.config.save_interface(
+                        self.current_interface,
+                        self.iface.get(self.current_interface)
+                    )
 
                 elif cmd.startswith("switchport access vlan "):
 
-                  vlan = int(cmd.split()[-1])
+                    vlan = int(cmd.split()[-1])
 
-                  self.iface.set_access_vlan(
-                  self.current_interface,
-                  vlan
-                  )
+                    self.iface.set_access_vlan(
+                        self.current_interface,
+                        vlan
+                    )
+
+                    self.config.save_interface(
+                        self.current_interface,
+                        self.iface.get(self.current_interface)
+                    )
 
                 else:
-                  print("% Invalid command")
+                    print("% Invalid command")

@@ -1,9 +1,9 @@
 {
-  "hostname": "Switch",
-  "vlans": {
-    "1": "default"
-  },
-  "interfaces": {},
-  "mac_table": [],
-  "routes": []
+    "hostname": "switch",
+    "vlans": {
+        "1": "default"
+    },
+    "interfaces": {},
+    "mac_table": [],
+    "routes": []
 }

@@ -4,7 +4,7 @@ from cli import CLI
 def main():
     print("""
 ====================================
-      SwitchSim v0.1
+      SwitchSim v0.3
  Cisco IOS CLI Simulator
 ====================================
 """)

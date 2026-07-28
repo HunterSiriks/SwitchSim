@@ -41,3 +41,10 @@ class InterfaceEngine:
 
     def all(self):
         return self.interfaces
+    def export(self):
+        return self.interfaces
+
+    def import_data(self, data):
+
+        if data:
+            self.interfaces.update(data)

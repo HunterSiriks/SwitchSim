@@ -49,3 +49,30 @@ class Config:
     def set_vlan_name(self, vlan, name):
         self.data["vlans"][str(vlan)] = name
         self.save()
+    def interfaces(self):
+        return self.data["interfaces"]
+
+    def save_interface(self, name, data):
+
+        self.data["interfaces"][name] = data
+
+        self.save()
+
+    def load_interfaces(self):
+
+        return self.data.get("interfaces", {})
+
+    def load_startup(self):
+
+        if not os.path.exists(
+            "configs/startup.json"
+        ):
+
+            return None
+
+        with open(
+            "configs/startup.json",
+            "r"
+        ) as f:
+
+            return json.load(f)
