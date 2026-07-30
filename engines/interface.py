@@ -48,3 +48,12 @@ class InterfaceEngine:
 
         if data:
             self.interfaces.update(data)
+
+    def default_interface(self, iface):
+
+            self.interfaces[iface] = {
+                "description": "",
+                "admin_up": False,
+                "mode": "access",
+                "access_vlan": 1
+            }

@@ -1,3 +1,5 @@
+import time
+
 from commands import Commands
 
 from config import Config
@@ -21,6 +23,8 @@ class CLI:
         self.config = Config()
 
         self.hostname = self.config.hostname()
+        
+        self.start_time = time.time()
 
         self.mode = "user"
 
@@ -51,6 +55,26 @@ class CLI:
         elif self.mode == "config-if":
             return f"{self.hostname}(config-if)# "
 
+    def uptime(self):
+
+        seconds = int(
+            time.time() - self.start_time
+        )
+
+        hours = seconds // 3600
+
+        minutes = (
+            seconds % 3600
+        ) // 60
+
+        seconds = seconds % 60
+
+        return (
+            f"{hours}h "
+            f"{minutes}m "
+            f"{seconds}s"
+        )
+
     def run(self):
 
         while True:
@@ -66,7 +90,7 @@ class CLI:
 
             if self.mode == "user":
 
-                if cmd == "enable":
+                if cmd in ["enable", "en"]:
 
                     self.mode = "privileged"
                 
@@ -94,7 +118,7 @@ class CLI:
 
             elif self.mode == "privileged":
 
-                if cmd in ("configure terminal", "conf t"):
+                if cmd in ["configure terminal", "conf t"]:
 
                     self.mode = "config"
 
@@ -102,57 +126,85 @@ class CLI:
 
                     self.mode = "user"
 
-                elif cmd == "show version":
+                elif cmd in ["show version", "sh ver"]:
 
                     Commands.show_version()
 
+                elif cmd == "show uptime":
 
-                elif cmd == "help":
+                    print(
+                        f"System uptime: {self.uptime()}"
+                    )
+
+                elif cmd in ["show clock", "sh clock"]:
+
+                    Commands.show_clock()
+
+                elif cmd in ["help", "?"]:
 
                     Help.show()
 
-                elif cmd == "?":
-
-                    Help.show()
-
-                elif cmd == "show vlan brief":
+                elif cmd in ["show vlan brief", "sh vlan", "show vlan"]:
 
                     Commands.show_vlan()
 
-                elif cmd == "show mac address-table":
+                elif cmd.startswith("show vlan id "):
+
+                    vlan = int(cmd.split()[-1])
+
+                    Commands.show_vlan_id(
+                        self.config,
+                        vlan
+                    )
+
+                elif cmd in ["show mac address-table", "sh mac"]:
 
                     Commands.show_mac()
 
-                elif cmd == "show ip interface brief":
+                elif cmd in ("show ip interface brief", "sh ip int br"):
 
                     Commands.show_ip_interface_brief()
                    
-                elif cmd == "show interfaces status":
+                elif cmd in ["show interfaces status", "sh int status"]:
 
                     Commands.show_interfaces_status(
                        self.iface
                     )
-                
-                elif cmd == "show running-config":
+
+                elif cmd in [
+                    "show interfaces switchport",
+                    "sh int switchport"
+                ]:
+
+                    Commands.show_interfaces_switchport(
+                       self.iface
+                    )
+
+                elif cmd in [
+                    "show interfaces description",
+                    "sh int desc"
+                ]:
+
+                    Commands.show_interfaces_description(
+                       self.iface
+                    )
+
+                elif cmd in ("show running-config", "sh run"):
                 
                     Commands.show_running_config(
                        self.config,
                        self.iface
                     )
                 
-                elif cmd == "copy running-config startup-config":
+                elif cmd in ["copy running-config startup-config", "copy run start"]:
 
                     copy_running_to_startup()
                 
-                elif cmd == "write memory":
+                elif cmd in ("write memory", "wr"):
                 
                     copy_running_to_startup()
 
-                elif cmd == "wr":
-
-                    copy_running_to_startup()
-
-                elif cmd == "show startup-config":
+                elif cmd in ["show startup-config", "sh start"]:
 
                     Commands.show_startup_config(
                         self.config
@@ -176,7 +228,7 @@ class CLI:
                         self.config.load_interfaces()
                     )
 
-                elif cmd == "write erase":
+                elif cmd in ("write erase", "we"):
 
                     erase_running_config()
 
@@ -190,21 +242,7 @@ class CLI:
                         self.config.load_interfaces()
                     )
 
-                elif cmd == "we":
-
-                    erase_running_config()
-
-                    self.config.load()
-
-                    self.hostname = (
-                        self.config.hostname()
-                    )
-
-                    self.iface.import_data(
-                        self.config.load_interfaces()
-                    )
-
-                elif cmd == "reload":
+                elif cmd in ["reload", "rel"]:
 
                     if reload_config():
 
@@ -257,17 +295,48 @@ class CLI:
 
                             self.config.set_hostname(parts[1])
 
-                    elif parts[0] == "vlan":
+                    elif cmd.startswith("vlan "):
 
-                        if len(parts) > 1:
+                        vlan = int(cmd.split()[1])
 
-                            self.current_vlan = parts[1]
+                        if vlan < 1 or vlan > 4094:
 
-                            self.config.add_vlan(parts[1])
+                            print(
+                                "% Invalid VLAN ID"
+                            )
+
+                        else:
+
+                            self.config.add_vlan(vlan)
+
+                            self.current_vlan = vlan
 
                             self.mode = "config-vlan"
 
-                    elif parts[0] == "interface":
+                    elif cmd.startswith("no vlan "):
+
+                        vlan = int(cmd.split()[-1])
+
+                        result = self.config.remove_vlan(vlan)
+
+                        if result is True:
+
+                            print(f"VLAN {vlan} deleted.")
+
+                        elif result is False:
+
+                            print("% Default VLAN 1 cannot be deleted.")
+
+                        else:
+
+                            print(f"% VLAN {vlan} does not exist.")
+
+                    elif (
+                        cmd.startswith("interface ")
+                        or
+                        cmd.startswith("int ")
+                    ):
+
 
                        if len(parts) > 1:
 
@@ -284,11 +353,50 @@ class CLI:
 
                          else:
 
-                            print("% Interface does not exist")
+                            print("% Invalid input detected at '^' marker.")
 
-                    else:
+                    elif (
+                        cmd.startswith("default interface ")
+                        or
+                        cmd.startswith("def int ")
+                    ):
 
-                        Commands.invalid()
+                        if cmd.startswith(
+                            "default interface "
+                        ):
+
+                            iface = cmd[18:]
+
+                        else:
+
+                            iface = cmd[8:]
+
+                        iface = iface.replace(
+                            "fa",
+                            "Fa"
+                        )
+
+                        iface = iface.replace(
+                            "gi",
+                            "Gi"
+                        )
+
+                        if self.iface.exists(
+                            iface
+                        ):
+
+                            self.iface.default_interface(
+                                iface
+                            )
+
+                            self.config.save_interface(
+                                iface,
+                                self.iface.get(iface)
+                            )
+
+                        else:
+
+                            Commands.invalid()
 
             #
             # VLAN MODE
@@ -360,15 +468,18 @@ class CLI:
 
                     vlan = int(cmd.split()[-1])
 
-                    self.iface.set_access_vlan(
-                        self.current_interface,
-                        vlan
-                    )
+                    if self.config.vlan_exists(vlan):
 
-                    self.config.save_interface(
-                        self.current_interface,
-                        self.iface.get(self.current_interface)
-                    )
+                        self.iface.set_access_vlan(
+                            self.current_interface,
+                            vlan
+                        )
 
+                    else:
+
+                        print(
+                            "% VLAN does not exist"
+                        )
                 else:
-                    print("% Invalid command")
+
+                     Commands.invalid()

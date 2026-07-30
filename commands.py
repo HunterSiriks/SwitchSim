@@ -1,4 +1,7 @@
 import time
+
+from datetime import datetime
+
 from config import Config
 
 cfg = Config()
@@ -8,19 +11,38 @@ class Commands:
 
     @staticmethod
     def invalid():
-        print("% Invalid command")
+        print(
+            "% Invalid input detected at '^' marker."
+        ) 
+
+    @staticmethod
+    def show_clock():
+
+        print(
+            datetime.now().strftime(
+                "%H:%M:%S %a %b %d %Y"
+            )
+        )
 
     @staticmethod
     def show_version():
 
-        print("""
+        print(f"""
+
 Cisco IOS Software
 
-SwitchSim Software Version 0.2
+SwitchSim Software Version 0.4
 
 Model Number : Catalyst-2960
 
-System image : flash:switchsim.bin
+System image file is "flash:switchsim.bin"
+
+System uptime : {self.uptime()}
+
+Compiled Thu 29-Jul-26
+
+Copyright (c) 2026 SwitchSim Project
+
 """)
 
     @staticmethod
@@ -252,3 +274,98 @@ Fa0/2                  unassigned      up
             print()
 
         print("end")
+
+    @staticmethod
+    def show_vlan_id(config, vlan):
+
+        vlan = str(vlan)
+
+        if vlan not in config.vlans():
+
+            print(
+                f"% VLAN {vlan} does not exist."
+            )
+
+            return
+
+        print()
+
+        print(f"VLAN ID : {vlan}")
+
+        print(
+            f"Name    : {config.vlans()[vlan]}"
+        )
+
+        print("Status  : active")
+
+        print()
+
+    @staticmethod
+    def show_interfaces_switchport(
+        iface_engine
+    ):
+
+        for iface, data in (
+            iface_engine.all().items()
+        ):
+
+            print()
+
+            print(f"Name: {iface}")
+
+            print()
+
+            print(
+                f"Administrative Mode: "
+                f"{data['mode']}"
+            )
+
+            print(
+                f"Operational Mode: "
+                f"{data['mode']}"
+            )
+
+            print(
+                f"Access Mode VLAN: "
+                f"{data['access_vlan']}"
+            )
+
+            print(
+                f"Description: "
+                f"{data['description']}"
+            )
+
+            print()
+
+    @staticmethod
+    def show_interfaces_description(
+        iface_engine
+    ):
+
+        print()
+
+        print(
+            "Interface    Status    Description"
+        )
+
+        print(
+            "---------    ------    -----------"
+        )
+
+        for iface, data in (
+            iface_engine.all().items()
+        ):
+
+            status = (
+                "up"
+                if data["admin_up"]
+                else "down"
+            )
+
+            print(
+                f"{iface:<12}"
+                f"{status:<10}"
+                f"{data['description']}"
+            )
+
+        print()

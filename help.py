@@ -23,12 +23,12 @@ class Help:
 
         print()
 
-        print("copy running-config startup-config")
-        print("write memory")
-        print("wr")
-        print("erase startup-config")
-        print("erase running-config")
-        print("write erase")
-        print("we")
+        print("copy running-config startup-config    ")
+        print("write memory / wr                     ")
+        print("wr                                    ")
+        print("erase startup-config                  ")
+        print("erase running-config                  ")
+        print("write erase / we                      ")
+        print("we                                    ")
         
         print()

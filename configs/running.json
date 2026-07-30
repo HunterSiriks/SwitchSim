@@ -1,9 +1,17 @@
 {
     "hostname": "switch",
     "vlans": {
-        "1": "default"
+        "1": "default",
+        "10": "hr"
     },
-    "interfaces": {},
+    "interfaces": {
+        "Fa0/1": {
+            "description": "",
+            "admin_up": false,
+            "mode": "access",
+            "access_vlan": 1
+        }
+    },
     "mac_table": [],
     "routes": []
 }
