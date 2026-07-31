@@ -62,19 +62,38 @@ Copyright (c) 2026 SwitchSim Project
         print()
 
     @staticmethod
-    def show_mac():
+    def show_mac(
+        devices
+    ):
 
-        print("""
-          Mac Address Table
+        print()
 
--------------------------------------------
+        print(
+            "Mac Address Table"
+        )
 
-Vlan    Mac Address       Type      Ports
+        print()
 
-1       0011.2233.4455    DYNAMIC   Fa0/1
+        print(
+            "-------------------------------------------"
+        )
 
-1       00AA.BBCC.DDEE    DYNAMIC   Fa0/2
-""")
+        print()
+
+        print(
+            "Vlan    Mac Address       Type      Ports"
+        )
+
+        print()
+
+        for entry in devices.mac_table():
+
+            print(
+                f"{entry['vlan']:<8}"
+                f"{entry['mac']:<18}"
+                f"DYNAMIC   "
+                f"{entry['port']}"
+            )
 
     @staticmethod
     def show_ip_interface_brief():

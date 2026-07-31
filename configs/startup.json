@@ -1,7 +1,8 @@
 {
-    "hostname": "switch",
+    "hostname": "Switch",
     "vlans": {
-        "1": "default"
+        "1": "default",
+        "10": "PC1"
     },
     "interfaces": {},
     "mac_table": [],

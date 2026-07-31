@@ -6,6 +6,8 @@ from config import Config
 
 from engines.interface import InterfaceEngine
 
+from devices.manager import DeviceManager
+
 from save import copy_running_to_startup
 
 from save import reload_config
@@ -31,7 +33,9 @@ class CLI:
         self.current_vlan = None
 
         self.iface = InterfaceEngine()
-        
+       
+        self.devices = DeviceManager()
+ 
         self.iface.import_data(
             self.config.load_interfaces()
         )
@@ -125,6 +129,53 @@ class CLI:
                 elif cmd == "disable":
 
                     self.mode = "user"
+                
+                elif cmd.startswith("learn-mac "):
+                    parts = cmd.split()
+
+                    if len(parts) == 3:
+
+                        self.mac.learn(
+                            1,
+                            parts[2],
+                            parts[1]
+                        )
+
+                elif cmd == "show devices":
+
+                    print()
+
+                    print(
+                        "Port     Device    MAC Address"
+                    )
+
+                    print()
+
+                    for port, device in self.devices.all().items():
+
+                        print(
+                            f"{port:<8} "
+                            f"{device.name:<8} "
+                            f"{device.mac}"
+                        )
+
+                elif cmd.startswith(
+                    "disconnect-device "
+                ):
+
+                    parts = cmd.split()
+
+                    if len(parts) == 2:
+
+                        port = parts[1]
+
+                        self.devices.disconnect(
+                            port
+                        )
+
+                        print(
+                            f"Device disconnected from {port}"
+                        )
 
                 elif cmd in ["show version", "sh ver"]:
 
@@ -148,6 +199,45 @@ class CLI:
 
                     Commands.show_vlan()
 
+                elif cmd.startswith("connect-device "):
+
+                    parts = cmd.split()
+
+                    if len(parts) == 3:
+
+                        port = parts[1]
+
+                        name = parts[2]
+
+                        mac = (
+                            "0011.2233."
+                            + str(
+                                len(
+                                    self.devices.all()
+                                ) + 1
+                            ).zfill(4)
+                        )
+
+                        if self.devices.connect(
+                            port,
+                            name,
+                            mac
+                        ):
+
+                            print(
+                                f"Device {name} connected to {port}"
+                            )
+
+                        else:
+
+                            print(
+                                "Port already has a device connected"
+                            )
+
+                    else:
+
+                        Commands.invalid()
+
                 elif cmd.startswith("show vlan id "):
 
                     vlan = int(cmd.split()[-1])
@@ -159,7 +249,9 @@ class CLI:
 
                 elif cmd in ["show mac address-table", "sh mac"]:
 
-                    Commands.show_mac()
+                    Commands.show_mac(
+                        self.devices
+                    )
 
                 elif cmd in ("show ip interface brief", "sh ip int br"):
 
@@ -190,18 +282,18 @@ class CLI:
                     )
 
                 elif cmd in ("show running-config", "sh run"):
-                
+
                     Commands.show_running_config(
                        self.config,
                        self.iface
                     )
-                
+
                 elif cmd in ["copy running-config startup-config", "copy run start"]:
 
                     copy_running_to_startup()
-                
+
                 elif cmd in ("write memory", "wr"):
-                
+
                     copy_running_to_startup()
 
                 elif cmd in ["show startup-config", "sh start"]:
@@ -213,7 +305,7 @@ class CLI:
                 elif cmd == "erase startup-config":
 
                     erase_startup_config()
-                
+
                 elif cmd == "erase running-config":
 
                     erase_running_config()

@@ -7,7 +7,7 @@ CONFIG_FILE = "configs/running.json"
 class Config:
 
     def __init__(self):
-        self.load()
+        self.load_startup()
 
     def load(self):
         if os.path.exists(CONFIG_FILE):
@@ -102,11 +102,15 @@ class Config:
             "configs/startup.json"
         ):
 
-            return None
+            self.load()
+
+            return
 
         with open(
             "configs/startup.json",
             "r"
         ) as f:
 
-            return json.load(f)
+            self.data = json.load(f)
+
+        self.save()
