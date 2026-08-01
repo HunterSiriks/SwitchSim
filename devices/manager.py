@@ -34,6 +34,19 @@ class DeviceManager:
 
             del self.devices[port]
 
+    def get_port(
+        self,
+        name
+    ):
+
+        for port, device in self.devices.items():
+
+            if device.name == name:
+
+                return port
+
+        return None
+
     def all(self):
 
         return self.devices
@@ -55,3 +68,16 @@ class DeviceManager:
             })
 
         return table
+
+    def exists(
+        self,
+        name
+    ):
+
+        for device in self.devices.values():
+
+            if device.name == name:
+
+                return True
+
+        return False

@@ -145,6 +145,7 @@ class CLI:
 
                     print()
 
+
                     print(
                         "Port     Device    MAC Address"
                     )
@@ -176,6 +177,80 @@ class CLI:
                         print(
                             f"Device disconnected from {port}"
                         )
+
+                elif cmd.startswith(
+                    "ping "
+                ):
+
+                    parts = cmd.split()
+
+                    if len(parts) == 2:
+
+                        target = parts[1]
+
+                        if self.devices.exists(
+                            target
+                        ):
+
+                            port = self.devices.get_port(
+                                target
+                            )
+
+                            if not self.iface.get(
+                                port
+                            )["admin_up"]:
+
+                                print()
+
+                                print(
+                                    "....."
+                                )
+
+                                print(
+                                    "Success rate is 0 percent (0/5)"
+                                )
+
+                            else:
+
+                                self.iface.increment_input(
+                                    port
+                                )
+
+                                self.iface.increment_output(
+                                    port
+                                )
+
+                                print()
+
+                                print(
+                                    "!!!!!"
+                                )
+
+                                print(
+                                    "Success rate is 100 percent (5/5)"
+                                )
+
+                        else:
+
+                            print()
+
+                            print(
+                                "....."
+                            )
+
+                            print(
+                                "Success rate is 0 percent (0/5)"
+                            )
+
+                elif cmd == "clear counters":
+
+                    self.iface.clear_counters()
+
+                    print()
+
+                    print(
+                        "All interface counters cleared"
+                    )
 
                 elif cmd in ["show version", "sh ver"]:
 
@@ -237,6 +312,55 @@ class CLI:
                     else:
 
                         Commands.invalid()
+
+                elif cmd.startswith(
+                    "show interface "
+                ):
+
+                    parts = cmd.split()
+
+                    if len(parts) == 3:
+
+                        iface = parts[2]
+
+                        data = self.iface.get(
+                            iface
+                        )
+
+                        print()
+
+                        print(
+                            f"{iface} is "
+                            + (
+                                "up"
+                                if data["admin_up"]
+                                else "down"
+                            )
+                        )
+
+                        print()
+
+                        print(
+                            f"Description: {data['description']}"
+                        )
+
+                        print(
+                            f"Access VLAN: {data['access_vlan']}"
+                        )
+
+                        print()
+
+                        print(
+                            f"Input packets : {data['input_packets']}"
+                        )
+
+                        print(
+                            f"Output packets: {data['output_packets']}"
+                        )
+
+                        print(
+                            f"Errors        : {data['errors']}"
+                        )
 
                 elif cmd.startswith("show vlan id "):
 

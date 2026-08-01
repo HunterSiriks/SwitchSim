@@ -9,7 +9,10 @@ class InterfaceEngine:
                 "description": "",
                 "admin_up": False,
                 "mode": "access",
-                "access_vlan": 1
+                "access_vlan": 1,
+                "input_packets": 0,
+                "output_packets": 0,
+                "errors": 0
             }
 
         # GigabitEthernet 0/1-2
@@ -18,7 +21,10 @@ class InterfaceEngine:
                 "description": "",
                 "admin_up": False,
                 "mode": "access",
-                "access_vlan": 1
+                "access_vlan": 1,
+                "input_packets": 0,
+                "output_packets": 0,
+                "errors": 0
             }
 
     def exists(self, name):
@@ -35,6 +41,43 @@ class InterfaceEngine:
 
     def set_access_vlan(self, name, vlan):
         self.interfaces[name]["access_vlan"] = vlan
+
+    def increment_input(
+        self,
+        iface
+    ):
+
+        self.interfaces[iface][
+            "input_packets"
+        ] += 1
+
+
+    def increment_output(
+        self,
+        iface
+    ):
+
+        self.interfaces[iface][
+            "output_packets"
+        ] += 1
+
+    def clear_counters(
+        self
+    ):
+
+        for iface in self.interfaces:
+
+            self.interfaces[iface][
+                "input_packets"
+            ] = 0
+
+            self.interfaces[iface][
+                "output_packets"
+            ] = 0
+
+            self.interfaces[iface][
+                "errors"
+            ] = 0
 
     def get(self, name):
         return self.interfaces[name]
@@ -53,7 +96,10 @@ class InterfaceEngine:
 
             self.interfaces[iface] = {
                 "description": "",
-                "admin_up": False,
+                "admin_up": True,
                 "mode": "access",
-                "access_vlan": 1
+                "access_vlan": 1,
+                "input_packets": 0,
+                "output_packets": 0,
+                "errors": 0
             }
