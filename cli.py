@@ -266,6 +266,26 @@ class CLI:
 
                     Commands.show_clock()
 
+                elif cmd in ["show users", "sh users"]:
+
+                    print()
+
+                    print(
+                        "Line       User"
+                    )
+
+                    print(
+                        "* console  admin"
+                    )
+
+                elif cmd in ["show hostname", "sh hostname"]:
+
+                    print()
+
+                    print(
+                        f"Hostname: {self.config.hostname()}"
+                    )
+
                 elif cmd in ["help", "?"]:
 
                     Help.show()

@@ -4,17 +4,7 @@
         "1": "default",
         "10": "PC1"
     },
-    "interfaces": {
-        "Fa0/1": {
-            "description": "",
-            "admin_up": true,
-            "mode": "access",
-            "access_vlan": 1,
-            "input_packets": 0,
-            "output_packets": 0,
-            "errors": 0
-        }
-    },
+    "interfaces": {},
     "mac_table": [],
     "routes": []
 }
