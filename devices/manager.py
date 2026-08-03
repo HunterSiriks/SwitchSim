@@ -7,6 +7,31 @@ class DeviceManager:
 
         self.devices = {}
 
+        self.mac_entries = []
+
+    def learn_mac(
+        self,
+        vlan,
+        mac,
+        port
+    ):
+
+        for entry in self.mac_entries:
+
+            if entry["mac"] == mac:
+
+                return
+
+        self.mac_entries.append({
+
+            "vlan": vlan,
+
+            "mac": mac,
+
+            "port": port
+
+        })
+
     def connect(
         self,
         port,
@@ -21,6 +46,12 @@ class DeviceManager:
         self.devices[port] = Device(
             name,
             mac
+        )
+
+        self.learn_mac(
+            1,
+            mac,
+            port
         )
 
         return True
@@ -51,23 +82,25 @@ class DeviceManager:
 
         return self.devices
 
-    def mac_table(self):
+    def mac_table(
+        self
+    ):
 
-        table = []
+        return self.mac_entries
 
-        for port, device in self.devices.items():
+    def mac_count(
+        self
+    ):
 
-            table.append({
+        return len(
+            self.mac_entries
+        )
 
-                "vlan": 1,
+    def clear_mac_table(
+        self
+    ):
 
-                "mac": device.mac,
-
-                "port": port
-
-            })
-
-        return table
+        self.mac_entries.clear()
 
     def exists(
         self,

@@ -141,7 +141,22 @@ class CLI:
                             parts[1]
                         )
 
-                elif cmd == "show devices":
+                elif cmd in [
+                    "show mac address-table count",
+                    "show mac count",
+                    "sh mac count"
+                ]:
+
+                    print()
+
+                    print(
+                        f"Total MAC Addresses for this criterion: {self.devices.mac_count()}"
+                    )
+
+                elif cmd in [
+                    "show devices",
+                    "sh devices"
+                ]:
 
                     print()
 
@@ -252,7 +267,10 @@ class CLI:
                         "All interface counters cleared"
                     )
 
-                elif cmd in ["show version", "sh ver"]:
+                elif cmd in [
+                    "show version",
+                    "sh ver"
+                ]:
 
                     Commands.show_version()
 
@@ -395,6 +413,18 @@ class CLI:
 
                     Commands.show_mac(
                         self.devices
+                    )
+
+                elif cmd == (
+                    "clear mac address-table"
+                ):
+
+                    self.devices.clear_mac_table()
+
+                    print()
+
+                    print(
+                        "MAC address table cleared"
                     )
 
                 elif cmd in ("show ip interface brief", "sh ip int br"):
