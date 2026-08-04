@@ -98,13 +98,9 @@ class CLI:
 
                     self.mode = "privileged"
                 
-                elif cmd == "help":
+                elif cmd in ["help", "?"]:
 
-                    Help.show()
-
-                elif cmd == "?":
-
-                    Help.show()
+                    Help.user()
 
                 elif cmd == "exit":
 
@@ -304,7 +300,11 @@ class CLI:
                         f"Hostname: {self.config.hostname()}"
                     )
 
-                elif cmd in ["help", "?"]:
+                elif cmd in ["help", "?"]: ###
+
+                    Help.privillage()
+
+                elif cmd == "show ?":
 
                     Help.show()
 
