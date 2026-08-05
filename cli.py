@@ -1,5 +1,7 @@
 import time
 
+import readline
+
 from commands import Commands
 
 from config import Config
@@ -16,7 +18,7 @@ from save import erase_startup_config
 
 from save import erase_running_config
 
-from help import Help
+from help import UserHelp, PrivHelp, GlobelHelp
 
 class CLI:
 
@@ -85,6 +87,12 @@ class CLI:
 
             cmd = input(self.prompt()).strip()
 
+            if readline.get_current_history_length() > 20:
+
+                readline.remove_history_item(
+                    0
+                )
+
             if cmd == "":
                 continue
 
@@ -100,7 +108,7 @@ class CLI:
                 
                 elif cmd in ["help", "?"]:
 
-                    Help.user()
+                    UserHelp.user()
 
                 elif cmd == "exit":
 
@@ -126,6 +134,23 @@ class CLI:
 
                     self.mode = "user"
                 
+                elif cmd in [
+                    "show history",
+                    "sh history"
+                ]:
+
+                    print()
+
+                    for i in range(
+                        1,
+                        readline.get_current_history_length() + 1
+                    ):
+
+                        print(
+                            f"{i}  "
+                            f"{readline.get_history_item(i)}"
+                        )
+
                 elif cmd.startswith("learn-mac "):
                     parts = cmd.split()
 
@@ -301,12 +326,13 @@ class CLI:
                     )
 
                 elif cmd in ["help", "?"]: ###
+                    PrivHelp.privilege()
 
-                    Help.privillage()
+                elif cmd in ["show ?","sh ?"]:
+                    PrivHelp.show()
 
-                elif cmd == "show ?":
-
-                    Help.show()
+                elif cmd == "clear ?":
+                    PrivHelp.clear()
 
                 elif cmd in ["show vlan brief", "sh vlan", "show vlan"]:
 
@@ -414,6 +440,27 @@ class CLI:
                     Commands.show_mac(
                         self.devices
                     )
+
+                elif cmd in [
+                    "show interfaces counters",
+                    "sh interfaces counters",
+                    "sh int counters"
+                ]:
+
+                    print()
+
+                    print(
+                        "Port     InPkts   OutPkts   Errors"
+                    )
+
+                    for iface, data in self.iface.all().items():
+
+                        print(
+                            f"{iface:<8} "
+                            f"{data.get('input_packets', 0):<8} "
+                            f"{data.get('output_packets', 0):<8} "
+                            f"{data.get('errors', 0)}"
+                        )
 
                 elif cmd == (
                     "clear mac address-table"
@@ -560,6 +607,9 @@ class CLI:
                             self.hostname = parts[1]
 
                             self.config.set_hostname(parts[1])
+
+                    elif cmd in ["help", "?"]:
+                        GlobelHelp.conf()
 
                     elif cmd.startswith("vlan "):
 
