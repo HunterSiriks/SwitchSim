@@ -165,6 +165,7 @@ class CLI:
                 elif cmd in [
                     "show mac address-table count",
                     "show mac count",
+                    "sh mac address-table count",
                     "sh mac count"
                 ]:
 
@@ -295,7 +296,10 @@ class CLI:
 
                     Commands.show_version()
 
-                elif cmd == "show uptime":
+                elif cmd in [
+                    "show uptime",
+                    "sh uptime"
+                ]:
 
                     print(
                         f"System uptime: {self.uptime()}"
@@ -328,10 +332,10 @@ class CLI:
                 elif cmd in ["help", "?"]: ###
                     PrivHelp.privilege()
 
-                elif cmd in ["show ?","sh ?"]:
+                elif cmd in ["show?","sh?"]:
                     PrivHelp.show()
 
-                elif cmd == "clear ?":
+                elif cmd == "clear?":
                     PrivHelp.clear()
 
                 elif cmd in ["show vlan brief", "sh vlan", "show vlan"]:
@@ -377,9 +381,10 @@ class CLI:
 
                         Commands.invalid()
 
-                elif cmd.startswith(
-                    "show interface "
-                ):
+                elif cmd.startswith in [
+                    "show interface ",
+                    "sh interface"
+                ]:
 
                     parts = cmd.split()
 
@@ -426,7 +431,10 @@ class CLI:
                             f"Errors        : {data['errors']}"
                         )
 
-                elif cmd.startswith("show vlan id "):
+                elif cmd.startswith in [
+                    "show vlan id",
+                    "sh vlan id"
+                ]:
 
                     vlan = int(cmd.split()[-1])
 
@@ -435,7 +443,12 @@ class CLI:
                         vlan
                     )
 
-                elif cmd in ["show mac address-table", "sh mac"]:
+                elif cmd in [
+                    "show mac address-table",
+                    "sh mac",
+                    "sh mac address-table",
+                    "show mac"
+                ]:
 
                     Commands.show_mac(
                         self.devices
@@ -486,7 +499,9 @@ class CLI:
 
                 elif cmd in [
                     "show interfaces switchport",
-                    "sh int switchport"
+                    "sh int switchport",
+                    "show int switchport",
+                    "sh interface switchport"
                 ]:
 
                     Commands.show_interfaces_switchport(
@@ -495,21 +510,34 @@ class CLI:
 
                 elif cmd in [
                     "show interfaces description",
-                    "sh int desc"
+                    "sh int desc",
+                    "show int desc",
+                    "sh interface desc",
+                    "sh int description",
+                    "show interface desc",
+                    "sh interface description"
                 ]:
 
                     Commands.show_interfaces_description(
                        self.iface
                     )
 
-                elif cmd in ("show running-config", "sh run"):
+                elif cmd in [
+                    "show running-config",
+                    "sh run",
+                    "show run",
+                    "sh running-config"
+                ]:
 
                     Commands.show_running_config(
                        self.config,
                        self.iface
                     )
 
-                elif cmd in ["copy running-config startup-config", "copy run start"]:
+                elif cmd in [
+                "copy running-config startup-config",
+                "copy run start"
+                ]:
 
                     copy_running_to_startup()
 
@@ -517,17 +545,28 @@ class CLI:
 
                     copy_running_to_startup()
 
-                elif cmd in ["show startup-config", "sh start"]:
+                elif cmd in [
+                "show startup-config",
+                "sh start",
+                "show start",
+                "sh startup-config"
+                ]:
 
                     Commands.show_startup_config(
                         self.config
                     )
 
-                elif cmd == "erase startup-config":
+                elif cmd in [
+                    "erase startup-config",
+                    "erase start"
+                ]:
 
                     erase_startup_config()
 
-                elif cmd == "erase running-config":
+                elif cmd in [
+                    "erase running-config"
+                    "erase run"
+                ]:
 
                     erase_running_config()
 
@@ -746,7 +785,10 @@ class CLI:
                 elif cmd == "end":
                     self.mode = "privileged"
 
-                elif cmd.startswith("description "):
+                elif cmd.startswith in [
+                    "description ",
+                    "desc"
+                ]:
 
                     self.iface.set_description(
                         self.current_interface,
@@ -756,6 +798,28 @@ class CLI:
                     self.config.save_interface(
                         self.current_interface,
                         self.iface.get(self.current_interface)
+                    )
+
+                elif cmd in [
+                    "no description",
+                    "no desc"
+                ]:
+
+                    self.iface.set_description(
+                        self.current_interface,
+                        ""
+                    )
+
+                    self.config.save_interface(
+                        self.current_interface,
+                        self.iface.get(
+                            self.current_interface
+                        )
+                    )
+
+                    print(
+                        f"Description removed from "
+                        f"{self.current_interface}"
                     )
 
                 elif cmd == "shutdown":

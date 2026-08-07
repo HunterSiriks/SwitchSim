@@ -1,10 +1,86 @@
 {
-    "hostname": "Switch",
+    "hostname": "SW-Floor1",
     "vlans": {
         "1": "default",
-        "10": "PC1"
+        "10": "Sales",
+        "20": "HR",
+        "30": "IT",
+        "50": "cameras"
     },
-    "interfaces": {},
+    "interfaces": {
+        "Fa0/2": {
+            "description": "Sales-pc2",
+            "admin_up": true,
+            "mode": "access",
+            "access_vlan": 10,
+            "input_packets": 0,
+            "output_packets": 0,
+            "errors": 0
+        },
+        "Fa0/1": {
+            "description": "Sales-pc1",
+            "admin_up": true,
+            "mode": "access",
+            "access_vlan": 10,
+            "input_packets": 0,
+            "output_packets": 0,
+            "errors": 0
+        },
+        "Fa0/3": {
+            "description": "HR-pc1",
+            "admin_up": true,
+            "mode": "access",
+            "access_vlan": 20,
+            "input_packets": 0,
+            "output_packets": 0,
+            "errors": 0
+        },
+        "Fa0/4": {
+            "description": "HR-pc2",
+            "admin_up": true,
+            "mode": "access",
+            "access_vlan": 20,
+            "input_packets": 0,
+            "output_packets": 0,
+            "errors": 0
+        },
+        "Fa0/5": {
+            "description": "IT-pc1",
+            "admin_up": true,
+            "mode": "access",
+            "access_vlan": 30,
+            "input_packets": 0,
+            "output_packets": 0,
+            "errors": 0
+        },
+        "Fa0/6": {
+            "description": "IT-pc2",
+            "admin_up": true,
+            "mode": "access",
+            "access_vlan": 30,
+            "input_packets": 0,
+            "output_packets": 0,
+            "errors": 0
+        },
+        "Fa0/7": {
+            "description": "Cam1",
+            "admin_up": true,
+            "mode": "access",
+            "access_vlan": 50,
+            "input_packets": 0,
+            "output_packets": 0,
+            "errors": 0
+        },
+        "Fa0/8": {
+            "description": "Cam2",
+            "admin_up": true,
+            "mode": "access",
+            "access_vlan": 50,
+            "input_packets": 0,
+            "output_packets": 0,
+            "errors": 0
+        }
+    },
     "mac_table": [],
     "routes": []
 }
