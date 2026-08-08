@@ -491,7 +491,12 @@ class CLI:
 
                     Commands.show_ip_interface_brief()
                    
-                elif cmd in ["show interfaces status", "sh int status"]:
+                elif cmd in [
+                    "show interfaces status",
+                    "sh int status",
+                    "show int status",
+                    "sh interface status"
+                ]:
 
                     Commands.show_interfaces_status(
                        self.iface
@@ -716,9 +721,12 @@ class CLI:
                         cmd.startswith("def int ")
                     ):
 
-                        if cmd.startswith(
-                            "default interface "
-                        ):
+                        if cmd.startswith in [
+                            "default interface ",
+                            "def int",
+                            "def interface",
+                            "deefault int"
+                        ]:
 
                             iface = cmd[18:]
 
