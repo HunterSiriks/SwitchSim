@@ -110,6 +110,70 @@ class CLI:
 
                     UserHelp.user()
 
+                elif cmd in ["enable?", "en?"]:
+
+                    UserHelp.enable()
+
+                elif cmd == "exit?":
+
+                    UserHelp.exit()
+
+                elif cmd == "ping?":
+
+                    UserHelp.ping()
+
+                elif cmd in ["sh?", "show?"]:
+
+                    UserHelp.show()
+
+                elif cmd in ["sh clock?", "show clock?"]:
+
+                    UserHelp.clock()
+
+                elif cmd in ["sh users?", "sh users?"]:
+
+                    UserHelp.users()
+
+                elif cmd in ["sh hostname?", "show hostname?"]:
+
+                    GlobelHelp.hostname()
+
+                elif cmd in ["sh ver?", "sh version?", "show ver?", "show version?"]:
+
+                    UserHelp.version()
+
+                elif cmd in ["sh ver", "sh version", "show ver", "show version"]:
+
+                    Commands.show_version()
+
+                elif cmd in ["sh clock", "show clock"]:
+
+                    Commands.show_clock()
+
+                elif cmd in ["sh users", "show users"]:
+
+                    print(
+                        "Line       User"
+                    )
+
+                    print(
+                        "* console  admin"
+                    )
+
+                elif cmd.startswith(
+                    "ping "
+                ):
+
+                    parts = cmd.split()
+
+                    if len(parts) == 2:
+
+                        Commands.ping(
+                            parts[1],
+                            self.devices,
+                            self.iface
+                        )
+
                 elif cmd == "exit":
 
                     print("Bye!")
@@ -223,61 +287,11 @@ class CLI:
 
                     if len(parts) == 2:
 
-                        target = parts[1]
-
-                        if self.devices.exists(
-                            target
-                        ):
-
-                            port = self.devices.get_port(
-                                target
-                            )
-
-                            if not self.iface.get(
-                                port
-                            )["admin_up"]:
-
-                                print()
-
-                                print(
-                                    "....."
-                                )
-
-                                print(
-                                    "Success rate is 0 percent (0/5)"
-                                )
-
-                            else:
-
-                                self.iface.increment_input(
-                                    port
-                                )
-
-                                self.iface.increment_output(
-                                    port
-                                )
-
-                                print()
-
-                                print(
-                                    "!!!!!"
-                                )
-
-                                print(
-                                    "Success rate is 100 percent (5/5)"
-                                )
-
-                        else:
-
-                            print()
-
-                            print(
-                                "....."
-                            )
-
-                            print(
-                                "Success rate is 0 percent (0/5)"
-                            )
+                        Commands.ping(
+                            parts[1],
+                            self.devices,
+                            self.iface
+                        )
 
                 elif cmd == "clear counters":
 
@@ -329,7 +343,11 @@ class CLI:
                         f"Hostname: {self.config.hostname()}"
                     )
 
-                elif cmd in ["help", "?"]: ###
+
+
+          ### help commands
+
+                elif cmd in ["help", "?"]:
                     PrivHelp.privilege()
 
                 elif cmd in ["show?","sh?"]:

@@ -1,5 +1,7 @@
 import time
 
+START_TIME = time.time()
+
 from datetime import datetime
 
 from config import Config
@@ -16,6 +18,15 @@ class Commands:
         ) 
 
     @staticmethod
+    def uptime():
+
+        seconds = int(
+            time.time() - START_TIME
+        )
+
+        return f"{seconds} seconds"
+
+    @staticmethod
     def show_clock():
 
         print(
@@ -23,6 +34,67 @@ class Commands:
                 "%H:%M:%S %a %b %d %Y"
             )
         )
+
+    @staticmethod
+    def ping(
+        target,
+        devices,
+        iface
+    ):
+
+        if devices.exists(
+            target
+        ):
+
+            port = devices.get_port(
+                target
+            )
+
+            if not iface.get(
+                port
+            )["admin_up"]:
+
+                print()
+
+                print(
+                    "% Interface is administratively down"
+                )
+
+                print(
+                    "Success rate is 0 percent (0/5)"
+                )
+
+            else:
+
+                iface.increment_input(
+                    port
+                )
+
+                iface.increment_output(
+                    port
+                )
+
+                print()
+
+                print(
+                    "!!!!!"
+                )
+
+                print(
+                    "Success rate is 100 percent (5/5)"
+                )
+
+        else:
+
+            print()
+
+            print(
+                f"% Unknown host or device: {target}"
+            )
+
+            print(
+                "Success rate is 0 percent (0/5)"
+            )
 
     @staticmethod
     def show_version():
@@ -37,7 +109,7 @@ Model Number : Catalyst-2960
 
 System image file is "flash:switchsim.bin"
 
-System uptime : {self.uptime()}
+System uptime : {Commands.uptime()}
 
 Compiled Thu 29-Jul-26
 

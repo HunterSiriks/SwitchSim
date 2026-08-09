@@ -9,6 +9,8 @@ class UserHelp:
         print("show")
 
         print()
+        print("Use <command>? to get info")
+        print()
 
     @staticmethod
     def enable():
