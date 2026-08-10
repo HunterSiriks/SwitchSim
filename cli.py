@@ -356,6 +356,34 @@ class CLI:
                 elif cmd == "clear?":
                     PrivHelp.clear()
 
+                elif cmd == "clear counters?":
+
+                    PrivHelp.counters()
+
+                elif cmd == "clear mac?":
+
+                    PrivHelp.mac()
+
+                elif cmd == "clear mac address-table?":
+
+                    PrivHelp.mac_table()
+
+                elif cmd == "configure?":
+
+                    PrivHelp.configure()
+
+                elif cmd in ["configure t?", "conf t?", "configure terminal?"]:
+
+                    PrivHelp.conf_t()
+
+                elif cmd == "connect-device?":
+
+                    PrivHelp.connect_device()
+
+                elif cmd == "disconnect-device?":
+
+                    PrivHelp.disconnect_divece()
+
                 elif cmd in ["show vlan brief", "sh vlan", "show vlan"]:
 
                     Commands.show_vlan()
