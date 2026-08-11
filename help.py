@@ -133,7 +133,6 @@ class PrivHelp:
         print("clock")
         print("devices")
         print("hostname")
-        print("interface")
         print("interfaces")
         print("mac")
         print("running-config")
@@ -157,7 +156,7 @@ class PrivHelp:
         print()
 
     @staticmethod
-    def inter_status():
+    def int_status():
         print("Display interface status information")
 
         print()
@@ -166,6 +165,18 @@ class PrivHelp:
     def mac_help():
         print("address-table")
         print("count")
+
+        print()
+
+    @staticmethod
+    def mac_table():
+        print("Display the MAC address table")
+
+        print()
+
+    @staticmethod
+    def mac_count():
+        print("Display the number of learned MAC addresses")
 
         print()
 

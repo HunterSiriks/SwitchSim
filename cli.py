@@ -382,7 +382,76 @@ class CLI:
 
                 elif cmd == "disconnect-device?":
 
-                    PrivHelp.disconnect_divece()
+                    PrivHelp.disconnect_device()
+
+                elif cmd in ["rel?", "reload?"]:
+
+                    PrivHelp.reload()
+
+                elif cmd in ["sh?", "show?"]:
+
+                    PrivHelp.show()
+
+                elif cmd in ["sh devices?", "show devices?"]:
+
+                    PrivHelp.device()
+
+                elif cmd in ["sh clock?", "show clock?"]:
+
+                    UserHelp.clock()
+
+                elif cmd in ["sh hostname?", "show hostname?"]:
+
+                    GlobelHelp.hostname()
+
+                elif cmd in ["sh interfaces?", "show interfaces?", "sh int?", "show int?"]:
+
+                    PrivHelp.interfaces()
+
+                elif cmd in ["sh int status?", "show int status?", "sh interfaces status?", "show interfaces status?"]:
+
+                    PrivHelp.int_status()
+
+                elif cmd in ["sh mac?", "show mac?"]:
+
+                    PrivHelp.mac_help()
+
+                elif cmd in ["sh mac address-table?", "show mac address-table?"]:
+
+                    PrivHelp.mac_table()
+
+                elif cmd in ["sh mac count?", "show mac count?"]:
+
+                    PrivHelp.mac_count()
+
+                elif cmd in ["sh run?", "sh running-config?", "show running-config?"]:
+
+                    PrivHelp.run()
+
+                elif cmd in ["sh start?", "show start?", "sh startup-config?", "show startup-config?"]:
+
+                    PrivHelp.start()
+
+                elif cmd in ["sh users?", "show users?"]:
+
+                    PrivHelp.users()
+
+                elif cmd in ["sh version?", "show version?", "show ver?", "sh ver?"]:
+
+                    UserHelp.version()
+
+                elif cmd in ["sh vlan?", "show vlan?"]:
+
+                    PrivHelp.vlan()
+
+                elif cmd in ["sh vlan brief?", "show vlan brief?"]:
+
+                    PrivHelp.vlan_brief()
+
+#
+#
+#
+
 
                 elif cmd in ["show vlan brief", "sh vlan", "show vlan"]:
 
