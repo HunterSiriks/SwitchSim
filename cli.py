@@ -768,7 +768,24 @@ class CLI:
                             self.config.set_hostname(parts[1])
 
                     elif cmd in ["help", "?"]:
+
                         GlobelHelp.conf()
+
+                    elif cmd == "exit?":
+
+                        GlobelHelp.exit()
+
+                    elif cmd == "hostname?":
+
+                        GlobelHelp.hostname()
+
+                    elif cmd == "interface?":
+
+                        GlobelHelp.interface()
+
+                    elif cmd == "vlan?":
+
+                        GlobelHelp.vlan()
 
                     elif cmd.startswith("vlan "):
 
