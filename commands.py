@@ -39,7 +39,8 @@ class Commands:
     def ping(
         target,
         devices,
-        iface
+        iface,
+        mac
     ):
 
         if devices.exists(
@@ -71,6 +72,21 @@ class Commands:
                 )
 
                 iface.increment_output(
+                    port
+                )
+
+                device = devices.all()[port]
+
+                vlan = iface.get(
+                    port
+                ).get(
+                    "access_vlan",
+                    1
+                )
+
+                mac.learn(
+                    vlan,
+                    device.mac,
                     port
                 )
 

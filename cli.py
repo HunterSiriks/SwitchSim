@@ -8,6 +8,8 @@ from config import Config
 
 from engines.interface import InterfaceEngine
 
+from engines.mac import MACTable
+
 from devices.manager import DeviceManager
 
 from save import copy_running_to_startup
@@ -34,6 +36,8 @@ class CLI:
 
         self.current_vlan = None
 
+        self.mac = MACTable()
+
         self.iface = InterfaceEngine()
        
         self.devices = DeviceManager()
@@ -42,7 +46,38 @@ class CLI:
             self.config.load_interfaces()
         )
 
+        self.load_devices()
+
         self.current_interface = None
+
+    def load_devices(
+        self
+    ):
+
+        for port, data in self.iface.all().items():
+
+            name = data.get(
+                "description",
+                ""
+            )
+
+            if not name:
+                continue
+
+            mac = (
+                "0011.2233."
+                + str(
+                    len(
+                        self.devices.all()
+                    ) + 1
+                ).zfill(4)
+            )
+
+            self.devices.connect(
+                port,
+                name,
+                mac
+            )
 
     def prompt(self):
 
@@ -171,7 +206,8 @@ class CLI:
                         Commands.ping(
                             parts[1],
                             self.devices,
-                            self.iface
+                            self.iface,
+                            self.mac
                         )
 
                 elif cmd == "exit":
@@ -236,7 +272,7 @@ class CLI:
                     print()
 
                     print(
-                        f"Total MAC Addresses for this criterion: {self.devices.mac_count()}"
+                        f"Total MAC Addresses: {self.mac.count()}"
                     )
 
                 elif cmd in [
@@ -290,7 +326,8 @@ class CLI:
                         Commands.ping(
                             parts[1],
                             self.devices,
-                            self.iface
+                            self.iface,
+                            self.mac
                         )
 
                 elif cmd == "clear counters":
@@ -333,6 +370,14 @@ class CLI:
 
                     print(
                         "* console  admin"
+                    )
+
+                elif cmd in ["clear mac address-table", "clear mac"]:
+
+                    self.mac.clear()
+
+                    print(
+                        "MAC address table cleared."
                     )
 
                 elif cmd in ["show hostname", "sh hostname"]:
@@ -565,9 +610,7 @@ class CLI:
                     "show mac"
                 ]:
 
-                    Commands.show_mac(
-                        self.devices
-                    )
+                    self.mac.show()
 
                 elif cmd in [
                     "show interfaces counters",
